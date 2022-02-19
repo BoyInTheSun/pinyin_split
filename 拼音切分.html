@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <title>拼音切分</title>
+</head>
+
+<body>
+    <p>输入拼音: <input type='txt' id="pinyin_raw"></p>
+    <p>提示: <span id="pinyin_tips"></span></p>
+    <p>拆分结果: <span id="pinyin_split"></span></p>
+
+    <script>
+        /*监听键盘输入*/
+        window.onkeyup = function () {
+            split_pinyin();
+        }
+        function split_pinyin() {
+            pinyin_raw = document.getElementById('pinyin_raw').value;
+            span_pinyin_tips = document.getElementById('pinyin_tips');
+            span_pinyin_split = document.getElementById('pinyin_split');
+            pinyin_group = [''];
+            for (let i in pinyin_raw) {
+                if (65 <= pinyin_raw[i].charCodeAt() && pinyin_raw[i].charCodeAt() <= 90) {
+                    temp = String.fromCharCode(pinyin_raw[i].charCodeAt() + 32);
+                    pinyin_group[pinyin_group.length - 1] = pinyin_group[pinyin_group.length - 1] + temp;
+                }
+                else if (97 <= pinyin_raw[i].charCodeAt() && pinyin_raw[i].charCodeAt() <= 122) {
+                    pinyin_group[pinyin_group.length - 1] = pinyin_group[pinyin_group.length - 1] + pinyin_raw[i];
+                }
+                else if (pinyin_group[pinyin_group.length - 1] != '') {
+                    pinyin_group.push('');
+                }
+            }
+            if (pinyin_group[pinyin_group.length - 1] == '') {
+                pinyin_group.length -= 1;
+            }
+            /*有内容*/
+            if (pinyin_group[0] != '') {
+                dict_pinyin = [['', 'i', 'n', 'ng', 'o'], ['a', 'ai', 'an', 'ang', 'ao', 'ei', 'en', 'eng', 'i', 'ian', 'iao', 'ie', 'in', 'ing', 'o', 'u'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'en', 'eng', 'ha', 'hai', 'han', 'hang', 'hao', 'he', 'hen', 'heng', 'hi', 'hong', 'hou', 'hu', 'hua', 'huai', 'huan', 'huang', 'hui', 'hun', 'huo', 'i', 'ong', 'ou', 'u', 'uan', 'ui', 'un', 'uo'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'ei', 'en', 'eng', 'i', 'ia', 'ian', 'iao', 'ie', 'ing', 'iu', 'ong', 'ou', 'u', 'uan', 'ui', 'un', 'uo', 'ao'], ['', 'n', 'r'], ['a', 'an', 'ang', 'ei', 'en', 'eng', 'o', 'ou', 'u'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'ei', 'en', 'eng', 'ong', 'ou', 'u', 'ua', 'uai', 'uan', 'uang', 'ui', 'un', 'uo'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'ei', 'en', 'eng', 'ong', 'ou', 'u', 'ua', 'uai', 'uan', 'uang', 'ui', 'un', 'uo'], [], ['i', 'ia', 'ian', 'iang', 'iao', 'ie', 'in', 'ing', 'iong', 'iu', 'u', 'uan', 'ue', 'un'], ['a', 'ai', 'an', 'ang', 'e', 'ei', 'en', 'eng', 'ong', 'ou', 'u', 'ua', 'uai', 'uan', 'uang', 'ui', 'un', 'uo'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'ei', 'eng', 'i', 'ia', 'ian', 'iang', 'iao', 'ie', 'in', 'ing', 'iu', 'o', 'ong', 'ou', 'u', 'uan', 'ue', 'un', 'uo', 'v', 've'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'ei', 'en', 'eng', 'i', 'ian', 'iao', 'ie', 'in', 'ing', 'iu', 'o', 'ou', 'u'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'ei', 'en', 'eng', 'i', 'ian', 'iang', 'iao', 'ie', 'in', 'ing', 'iu', 'ong', 'u', 'uan', 'ue', 'uo', 'v', 've'], ['u'], ['a', 'ai', 'an', 'ang', 'ao', 'ei', 'en', 'eng', 'i', 'ian', 'iao', 'ie', 'in', 'ing', 'o', 'ou', 'u'], ['i', 'ia', 'ian', 'iang', 'iao', 'ie', 'in', 'ing', 'iong', 'iu', 'u', 'uan', 'ue', 'un'], ['an', 'ang', 'ao', 'e', 'en', 'eng', 'i', 'ong', 'ou', 'u', 'ua', 'uan', 'ui', 'un', 'uo'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'en', 'eng', 'ha', 'hai', 'han', 'hang', 'hao', 'he', 'hei', 'hen', 'heng', 'hi', 'hou', 'hu', 'hua', 'huai', 'huan', 'huang', 'hui', 'hun', 'huo', 'i', 'ong', 'ou', 'u', 'uan', 'ui', 'un', 'uo'], ['a', 'ai', 'an', 'ang', 'ao', 'e', 'eng', 'i', 'ian', 'iao', 'ie', 'ing', 'ong', 'ou', 'u', 'uan', 'ui', 'un', 'uo'], [], [], ['a', 'ai', 'an', 'ang', 'ei', 'en', 'eng', 'o', 'u'], ['i', 'ia', 'ian', 'iang', 'iao', 'ie', 'in', 'ing', 'iong', 'iu', 'u', 'uan', 'ue', 'un'], ['a', 'an', 'ang', 'ao', 'e', 'i', 'in', 'ing', 'o', 'ong', 'ou', 'u', 'uan', 'ue', 'un'], ['a', 'ai', 'an', 'ang', 'e', 'ei', 'en', 'eng', 'ha', 'hai', 'han', 'hang', 'hao', 'he', 'hei', 'hen', 'heng', 'hi', 'hong', 'hou', 'hu', 'hua', 'huai', 'huan', 'huang', 'hui', 'hun', 'huo', 'i', 'ong', 'ou', 'u', 'uan', 'ui', 'un', 'u']];
+                output = Array();
+                /*下标对于a-z，里面的对应除首字母后续内容*/
+                for (let i in pinyin_group) {
+                    output.push(Array())
+                    pinyin = pinyin_group[i];
+                    temp_output = [[]];  /*[['bian'], ['bia'],['bi', 'an']]*/
+                    pinyin_split = Array();
+                    while (temp_output.length > 0) {
+                        /*匹配结束*/
+                        if (temp_output[temp_output.length - 1].join('').length == pinyin.length) {
+                            output[i].push(temp_output[temp_output.length - 1]);
+                            temp_output.length -= 1;
+                            continue;
+                        }
+                        /*匹配不上声母*/
+                        ports_raw = dict_pinyin[pinyin[temp_output[temp_output.length - 1].join('').length].charCodeAt() - 97];  /*从末尾处理*/
+                        if (ports_raw.length == 0) {
+                            temp_output.length -= 1;
+                            continue;
+                        }
+                        /*添加声母*/
+                        temp_output[temp_output.length - 1].push(pinyin[temp_output[temp_output.length - 1].join('').length]);
+                        /*添加韵母*/
+                        parts = Array();
+                        for (let each of ports_raw) {
+                            if (each.length <= pinyin.length - temp_output[temp_output.length - 1].join('').length) {
+                                parts.push(each);
+                            }
+                        }
+                        /*删除当前*/
+                        temp_need_yunmu = temp_output[temp_output.length - 1];
+                        temp_output.length -= 1;
+                        /*依次匹配*/
+                        for (part of parts) {
+                            let pointer = temp_need_yunmu.join('').length;
+                            if (pinyin.slice(pointer, pointer + part.length) == part) {
+                                temp_have_yunmu = temp_need_yunmu.slice();
+                                temp_have_yunmu[temp_have_yunmu.length - 1] = temp_have_yunmu[temp_have_yunmu.length - 1] + part;
+                                temp_output.push(temp_have_yunmu)
+                            }
+                        }
+                    }
+                }
+                /*判断结果*/
+                is_unsolvable = false;
+                is_unique = true;
+                pinyin_output = Array();
+                for (let each of output) {
+                    if (each.length == 0) {
+                        is_unsolvable = true;
+                    }
+                    else {
+                        if (each.length > 1) {
+                            is_unique = false;
+                        }
+                        pinyin_output = pinyin_output.concat(each[0]);
+                    }
+                }
+                /*无解*/
+                if (is_unsolvable) {
+                    span_pinyin_tips.innerText = '非汉语拼音，请用空格分隔姓名';
+                    span_pinyin_split.innerText = pinyin_group.join('`');
+                }
+                else {
+                    span_pinyin_split.innerText = pinyin_output.join('`');
+                    /*唯一解*/
+                    if (is_unique) {
+                        span_pinyin_tips.innerText = '停用自动分隔在开头输入#';
+                    }
+                    /*多解*/
+                    else {
+                        span_pinyin_tips.innerText = '分隔方式有歧义，如有必要请手动输入分隔符';
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
